@@ -1,8 +1,16 @@
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 
-class Expense_main{
+interface ExpenseDataReceiver {
+    void receiveExpense(String income, String expense, String balance, String category, String date, String description, String amount);
+}
+class Expense_main implements ExpenseDataReceiver {
     public static void main(String args[]) {
+        new Expense_main().initUI(); // call instance method from static
+    }
+
+    public void initUI() {
         JFrame frame = new JFrame("Personal Expense Manager");
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -19,6 +27,9 @@ class Expense_main{
         JButton addExpenseButton = new JButton("Add Expense");
         addExpenseButton.setBounds(50, 70, 130, 30);
         frame.add(addExpenseButton);
+        addExpenseButton.addActionListener(e -> {
+            new AddingFrame(this); // pass current instance
+        });
 
         // Expense Report Button
         JButton expenseReportButton = new JButton("Expense Report");
@@ -49,5 +60,14 @@ class Expense_main{
             x += 110;
         }
         frame.setVisible(true);
+    }
+    public void receiveExpense(String income, String expense, String balance, String category, String date, String description, String amount) {
+        System.out.println("INCOME: " + income);
+        System.out.println("EXPENSE: " + expense);
+        System.out.println("BALANCE: " + balance);
+        System.out.println("CATEGORY: " + category);
+        System.out.println("DATE: " + date);
+        System.out.println("DESCRIPTION: " + description);
+        System.out.println("AMOUNT: " + amount);
     }
 }
