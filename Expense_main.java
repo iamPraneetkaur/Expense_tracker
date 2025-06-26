@@ -1,18 +1,23 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 interface ExpenseDataReceiver {
     void receiveExpense(String income, String expense, String balance, String category, String date, String description, String amount);
 }
+
 class Expense_main implements ExpenseDataReceiver {
+    private DefaultTableModel tableModel;
+
     public static void main(String args[]) {
-        new Expense_main().initUI(); // call instance method from static
+        new Expense_main().initUI();
     }
 
     public void initUI() {
         JFrame frame = new JFrame("Personal Expense Manager");
-        frame.setSize(800, 600);
+        frame.setSize(900, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
         frame.setLocationRelativeTo(null);
@@ -45,29 +50,36 @@ class Expense_main implements ExpenseDataReceiver {
         // Filter Button
         JButton filterButton = new JButton("Filter");
         filterButton.setBounds(630, 70, 80, 30);
-        filterButton.setBackground(new Color(135, 206, 250)); // Light blue
+        filterButton.setBackground(new Color(135, 206, 250));
         frame.add(filterButton);
 
-        // Table Headers (as labels for now)
-        int headerY = 130;
-        String[] headers = { "ItemId", "ItemName", "Amount", "ExpenseDate", "Category", "Action Item" };
-        int x = 50;
-        for (String header : headers){
-            JLabel label = new JLabel(header);
-            label.setFont(new Font("Arial", Font.BOLD, 14));
-            label.setBounds(x, headerY, 100, 25);
-            frame.add(label);
-            x += 110;
-        }
+        // Table with grid lines, fixed headers
+        String[] columns = {"Income", "Expense", "Balance", "Category", "Date", "Description", "Amount"};
+        tableModel = new DefaultTableModel(columns, 0);
+        JTable table = new JTable(tableModel);
+
+        // Make column headers fixed (non-moveable and non-resizable)
+        JTableHeader header = table.getTableHeader();
+        header.setReorderingAllowed(false);
+        table.getTableHeader().setResizingAllowed(false);
+
+        // Show grid lines
+        table.setShowGrid(true);
+        table.setGridColor(Color.GRAY);
+
+        // Make table non-editable (optional)
+        table.setDefaultEditor(Object.class, null);
+
+        // Scroll pane wrapping the table
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBounds(50, 130, 780, 400);
+        frame.add(scrollPane);
+
         frame.setVisible(true);
     }
+
     public void receiveExpense(String income, String expense, String balance, String category, String date, String description, String amount) {
-        System.out.println("INCOME: " + income);
-        System.out.println("EXPENSE: " + expense);
-        System.out.println("BALANCE: " + balance);
-        System.out.println("CATEGORY: " + category);
-        System.out.println("DATE: " + date);
-        System.out.println("DESCRIPTION: " + description);
-        System.out.println("AMOUNT: " + amount);
+        String[] row = {income, expense, balance, category, date, description, amount};
+        tableModel.addRow(row);
     }
 }
