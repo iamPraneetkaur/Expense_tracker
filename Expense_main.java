@@ -5,16 +5,16 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 interface ExpenseDataReceiver {
-    void receiveExpense(String income, String expense, String balance, String category, String date, String description, String amount);
+    void receiveExpense(String expense, String balance, String category, String date, String description, String amount);
 }
 
 class Expense_main implements ExpenseDataReceiver {
     private DefaultTableModel tableModel;
+    private JTextField inField;
 
     public static void main(String args[]) {
         new Expense_main().initUI();
     }
-
     public void initUI() {
         JFrame frame = new JFrame("Personal Expense Manager");
         frame.setSize(900, 600);
@@ -33,7 +33,8 @@ class Expense_main implements ExpenseDataReceiver {
         addExpenseButton.setBounds(50, 70, 130, 30);
         frame.add(addExpenseButton);
         addExpenseButton.addActionListener(e -> {
-            new AddingFrame(this); // pass current instance
+            String income= inField.getText();
+            new AddingFrame(this, income); // pass current instance
         });
 
         // Expense Report Button
@@ -42,19 +43,18 @@ class Expense_main implements ExpenseDataReceiver {
         expenseReportButton.setBackground(Color.GREEN);
         frame.add(expenseReportButton);
 
-        // Search Field
-        JTextField searchField = new JTextField("Search");
-        searchField.setBounds(500, 70, 120, 30);
-        frame.add(searchField);
-
-        // Filter Button
-        JButton filterButton = new JButton("Filter");
-        filterButton.setBounds(630, 70, 80, 30);
-        filterButton.setBackground(new Color(135, 206, 250));
-        frame.add(filterButton);
+        //Income Label
+        JLabel inLabel = new JLabel("Income: ");
+        inLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        inLabel.setBounds(500, 70, 150, 25);
+        frame.add(inLabel);
+        //Income Text Field
+        inField = new JTextField();
+        inField.setBounds(600, 70, 120, 30);
+        frame.add(inField);
 
         // Table with grid lines, fixed headers
-        String[] columns = {"Income", "Expense", "Balance", "Category", "Date", "Description", "Amount"};
+        String[] columns = {"Expense", "Balance", "Category", "Date", "Description", "Amount"};
         tableModel = new DefaultTableModel(columns, 0);
         JTable table = new JTable(tableModel);
 
@@ -77,9 +77,8 @@ class Expense_main implements ExpenseDataReceiver {
 
         frame.setVisible(true);
     }
-
-    public void receiveExpense(String income, String expense, String balance, String category, String date, String description, String amount) {
-        String[] row = {income, expense, balance, category, date, description, amount};
+    public void receiveExpense(String expense, String balance, String category, String date, String description, String amount) {
+        String[] row = {expense, balance, category, date, description, amount};
         tableModel.addRow(row);
     }
 }
