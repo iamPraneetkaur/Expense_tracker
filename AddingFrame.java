@@ -2,11 +2,11 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 
-
 class AddingFrame{
-    AddingFrame(ExpenseDataReceiver receiver){
+    private JFrame frame;
+    AddingFrame(ExpenseDataReceiver receiver, String income){
         Font subLabel = new Font("Arial", Font.BOLD, 16);
-        JFrame frame = new JFrame("Expense Tracker");
+        this.frame = new JFrame("Expense Manager");
         frame.setSize(600, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null); // Absolute positioning
@@ -18,17 +18,6 @@ class AddingFrame{
         titleLabel.setBounds(200, 20, 250, 30);
         frame.add(titleLabel);
 
-        // Income Label
-        JLabel incomeLabel = new JLabel("Total Income:");
-        incomeLabel.setFont(subLabel);
-        incomeLabel.setBounds(50, 80, 150, 25);
-        frame.add(incomeLabel);
-
-        // Income Text Field
-        JTextField inTextField = new JTextField();
-        inTextField.setBounds(200, 80, 150, 25);
-        frame.add(inTextField);
-
         // Expense Label
         JLabel expenseLabel = new JLabel("Total Expenses:");
         expenseLabel.setFont(subLabel);
@@ -39,17 +28,6 @@ class AddingFrame{
         JTextField exTextField = new JTextField();
         exTextField.setBounds(200, 120, 150, 25);
         frame.add(exTextField);
-
-        // Balance Label
-        JLabel balanceLabel = new JLabel("Remaining Balance:");
-        balanceLabel.setFont(subLabel);
-        balanceLabel.setBounds(50, 160, 180, 25);
-        frame.add(balanceLabel);
-
-        // Balance Text Field
-        JTextField balTextField = new JTextField();
-        balTextField.setBounds(230, 160, 150, 25);
-        frame.add(balTextField);
 
         // Category Label
         JLabel categoryLabel = new JLabel("Expense Category:");
@@ -131,9 +109,8 @@ class AddingFrame{
         frame.add(submitButton);
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String income = inTextField.getText();
                 String expense = exTextField.getText();
-                String balance = balTextField.getText();
+                String balance = Integer.toString(Integer.parseInt(income)-Integer.parseInt(exTextField.getText()));
                 String category = (String) catComboBox.getSelectedItem();
 
                 int day = (int) dayComboBox.getSelectedItem();
@@ -145,12 +122,10 @@ class AddingFrame{
                 String amount = amountTextField.getText();
 
                 // Send data to the receiver (e.g., main frame)
-                receiver.receiveExpense(income, expense, balance, category, date, description, amount);
-
+                receiver.receiveExpense(expense, balance, category, date, description, amount);
                 frame.dispose();
             }
         });
-
         frame.setVisible(true);
     }
 }
