@@ -81,13 +81,14 @@ class Expense_main implements ExpenseDataReceiver {
         double amount = Double.parseDouble(expense);
         totalExpenses += amount;
         double balance = income - totalExpenses;
+        amount= income-balance;
         String[] row = {
             expense,
             String.format("%.2f", balance),
             category,
             date,
             description,
-            expense
+            Double.toString(amount)
         };
         tableModel.addRow(row);
     }
